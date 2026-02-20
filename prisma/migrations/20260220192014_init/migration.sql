@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "FeedItem" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "source" TEXT NOT NULL,
     "sourceItemId" TEXT NOT NULL,
     "title" TEXT NOT NULL,
@@ -8,10 +8,11 @@ CREATE TABLE "FeedItem" (
     "description" TEXT,
     "url" TEXT,
     "imageUrl" TEXT,
-    "completedAt" DATETIME NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
-    "metadata" JSONB
+    "completedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "FeedItem_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
