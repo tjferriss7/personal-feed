@@ -43,7 +43,11 @@ export async function syncStrava() {
     }
   );
 
-  if (!res.ok) throw new Error("Failed to fetch Strava activities");
+  if (!res.ok) {
+  const text = await res.text();
+  console.error("Strava activities error:", res.status, text);
+  throw new Error(`Failed to fetch Strava activities (status ${res.status})`);
+  }
 
   const activities = (await res.json()) as StravaActivity[];
 
