@@ -11,15 +11,19 @@ type StravaActivity = {
 };
 
 async function getStravaAccessToken() {
+  const params = new URLSearchParams({
+    client_id: process.env.STRAVA_CLIENT_ID ?? "",
+    client_secret: process.env.STRAVA_CLIENT_SECRET ?? "",
+    grant_type: "refresh_token",
+    refresh_token: process.env.STRAVA_REFRESH_TOKEN ?? "",
+  });
+
   const res = await fetch("https://www.strava.com/oauth/token", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      client_id: process.env.STRAVA_CLIENT_ID,
-      client_secret: process.env.STRAVA_CLIENT_SECRET,
-      grant_type: "refresh_token",
-      refresh_token: process.env.STRAVA_REFRESH_TOKEN,
-    }),
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: params.toString(),
   });
 
   if (!res.ok) {
@@ -38,15 +42,17 @@ export async function syncStrava() {
   const res = await fetch(
     "https://www.strava.com/api/v3/athlete/activities?per_page=50&page=1",
     {
-      headers: { Authorization: `Bearer ${accessToken}` },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
       cache: "no-store",
     }
   );
 
   if (!res.ok) {
-  const text = await res.text();
-  console.error("Strava activities error:", res.status, text);
-  throw new Error(`Failed to fetch Strava activities (status ${res.status})`);
+    const text = await res.text();
+    console.error("Strava activities error:", res.status, text);
+    throw new Error(`Failed to fetch Strava activities (status ${res.status})`);
   }
 
   const activities = (await res.json()) as StravaActivity[];
